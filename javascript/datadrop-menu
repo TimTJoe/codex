@@ -1,1 +1,61 @@
+<style>
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 10px;
+}
 
+</style>
+<!-- Trigger buttons -->
+<button data-menu="#location">Location</button>
+<button data-menu="#settings">Settings</button>
+
+<!-- Dropdown menus -->
+<div data-menu="location" class="dropdown-menu">
+    <p>Location Option 1</p>
+    <p>Location Option 2</p>
+</div>
+<div data-menu="settings" class="dropdown-menu">
+    <p>Settings Option 1</p>
+    <p>Settings Option 2</p>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    // Attach click event listeners to all elements with data-menu attributes
+    const triggers = document.querySelectorAll("[data-menu^='#']");
+
+    triggers.forEach(trigger => {
+        trigger.addEventListener("click", (event) => {
+            const menuSelector = trigger.getAttribute("data-menu").substring(1); // Remove '#' from selector
+            const dropdownMenu = document.querySelector(`[data-menu="${menuSelector}"]`);
+
+            if (!dropdownMenu) return; // Exit if no corresponding dropdown menu is found
+
+            // Toggle visibility of the dropdown menu
+            const isVisible = dropdownMenu.style.display === "block";
+            document.querySelectorAll(".dropdown-menu").forEach(menu => menu.style.display = "none"); // Hide all other menus
+
+            if (!isVisible) {
+                // Position the dropdown menu below the trigger
+                const rect = trigger.getBoundingClientRect();
+                dropdownMenu.style.top = `${rect.bottom + window.scrollY}px`;
+                dropdownMenu.style.left = `${rect.left + window.scrollX}px`;
+                dropdownMenu.style.display = "block";
+            }
+        });
+    });
+
+    // Close all dropdowns when clicking outside
+    document.addEventListener("click", (event) => {
+        if (!event.target.matches("[data-menu^='#']")) {
+            document.querySelectorAll(".dropdown-menu").forEach(menu => {
+                menu.style.display = "none";
+            });
+        }
+    });
+});
+<script>
